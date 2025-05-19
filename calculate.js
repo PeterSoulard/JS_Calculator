@@ -14,7 +14,7 @@
  */
 class Calculator {
     constructor() {
-        this.memory = [];
+        this.memory = null;
         this.degrees_mode = true;
     }
 
@@ -23,6 +23,8 @@ class Calculator {
             console.log("method addition called with NaN");
             return null;
         }
+        a = Number(a);
+        b = Number(b);
 
         return a + b;
     }
@@ -32,6 +34,8 @@ class Calculator {
             console.log("method subtraction called with NaN");
             return null;
         }
+        a = Number(a);
+        b = Number(b);
 
         return a - b;
     }
@@ -41,6 +45,8 @@ class Calculator {
             console.log("method multiplication called with NaN");
             return null;
         }
+        a = Number(a);
+        b = Number(b);
 
         return a * b;
     }
@@ -50,6 +56,8 @@ class Calculator {
             console.log("method division called with NaN");
             return null;
         }
+        a = Number(a);
+        b = Number(b);
 
         return a / b;
     }
@@ -73,6 +81,7 @@ class Calculator {
             console.log("method sine called with NaN");
             return null;
         }
+        a = Number(a);
 
         return Math.sin(this.convertMode(a));
     }
@@ -82,6 +91,7 @@ class Calculator {
             console.log("method cosine called with NaN");
             return null;
         }
+        a = Number(a);
 
         return Math.cos(this.convertMode(a));
     }
@@ -91,6 +101,7 @@ class Calculator {
             console.log("method tangent called with NaN");
             return null;
         }
+        a = Number(a);
 
         return Math.tan(this.convertMode(a));
     }
@@ -100,6 +111,7 @@ class Calculator {
             console.log("method cosecant called with NaN");
             return null;
         }
+        a = Number(a);
 
         let sine = Math.sin(this.convertMode(a));
 
@@ -116,6 +128,7 @@ class Calculator {
             console.log("method secant called with NaN");
             return null;
         }
+        a = Number(a);
 
         let cosine = Math.cos(this.convertMode(a));
 
@@ -132,6 +145,7 @@ class Calculator {
             console.log("method cotangent called with NaN");
             return null;
         }
+        a = Number(a);
 
         let tangens = Math.tan(this.convertMode(a));
 
@@ -146,6 +160,5 @@ class Calculator {
 
 obj = new Calculator();
 
-console.log(obj.sine(90));
-obj.toggleDegreesRadians();
-console.log(obj.sine(90));
+console.log(obj.addition("1", "2"));
+console.log(obj.subtraction(10, "0"));
