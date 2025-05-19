@@ -5,9 +5,12 @@
  * - multiplication
  * - division
  * As well as the following trig operations (doable in both degree mode and radian mode):
- * - sin
- * - cos
- * - tan
+ * - sine
+ * - cosine
+ * - tangent
+ * - cosecant
+ * - secant
+ * - cotangent
  */
 class Calculator {
     constructor() {
@@ -51,9 +54,9 @@ class Calculator {
         this.degrees_mode = !this.degrees_mode;
     }
 
-    sin(a) {
+    sine(a) {
         if (isNaN(a)) {
-            console.log("method sin called with NaN");
+            console.log("method sine called with NaN");
             return null;
         }
 
@@ -64,9 +67,9 @@ class Calculator {
         return Math.sin(a);
     }
 
-    cos(a) {
+    cosine(a) {
         if (isNaN(a)) {
-            console.log("method sin called with NaN");
+            console.log("method cosine called with NaN");
             return null;
         }
 
@@ -77,9 +80,9 @@ class Calculator {
         return Math.cos(a);
     }
 
-    tan(a) {
+    tangent(a) {
         if (isNaN(a)) {
-            console.log("method sin called with NaN");
+            console.log("method tangent called with NaN");
             return null;
         }
 
@@ -89,10 +92,49 @@ class Calculator {
 
         return Math.tan(a);
     }
+
+    cosecant(a) {
+        if (isNaN(a)) {
+            console.log("method cosecant called with NaN");
+            return null;
+        }
+
+        if (this.degrees_mode) {
+            a *= (Math.PI / 180);
+        }
+
+        return 1 / Math.sin(a);
+    }
+
+    secant(a) {
+        if (isNaN(a)) {
+            console.log("method secant called with NaN");
+            return null;
+        }
+
+        if (this.degrees_mode) {
+            a *= (Math.PI / 180);
+        }
+
+        return 1 / Math.cos(a);
+    }
+
+    cotangent(a) {
+        if (isNaN(a)) {
+            console.log("method cotangent called with NaN");
+            return null;
+        }
+
+        if (this.degrees_mode) {
+            a *= (Math.PI / 180);
+        }
+
+        return 1 / Math.tan(a);
+    }
 }
 
 obj = new Calculator();
 
-console.log(obj.sin(90));
+console.log(obj.sine(90));
 obj.toggleDegreesRadians();
-console.log(obj.sin(90));
+console.log(obj.sine(90));
