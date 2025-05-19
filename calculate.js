@@ -15,41 +15,62 @@ class Calculator {
     }
 
     addition(a, b) {
-        // TODO: Constrain the types to being floats
+        if (isNaN(a) || isNaN(b)) {
+            console.log("method addition called with NaN");
+            return null;
+        }
         return a + b;
     }
 
     subtraction(a, b) {
-        // TODO: Constrain the types to being floats
+        if (isNaN(a) || isNaN(b)) {
+            console.log("method subtraction called with NaN");
+            return null;
+        }
         return a - b;
     }
 
     multiplication(a, b) {
-        // TODO: Constrain the types to being floats
+        if (isNaN(a) || isNaN(b)) {
+            console.log("method multiplication called with NaN");
+            return null;
+        }
         return a * b;
     }
 
     division(a, b) {
-        // TODO: Constrain the types to being floats
+        if (isNaN(a) || isNaN(b)) {
+            console.log("method division called with NaN");
+            return null;
+        }
         return a / b;
     }
 
-    sin(a) {
-        // TODO: Constrain the type to being a float
-        return Math.sin(a);
+    sin(degrees) {
+        if (isNaN(a)) {
+            console.log("method sin called with NaN");
+            return null;
+        }
+        return Math.sin(degrees * (Math.PI / 180));
     }
 
-    cos(a) {
-        // TODO: Constrain the type to being a float
-        return Math.cos(a);
+    cos(degrees) {
+        if (isNaN(a)) {
+            console.log("method sin called with NaN");
+            return null;
+        }
+        return Math.cos(degrees * (Math.PI / 180));
     }
 
-    tan(a) {
-        // TODO: Constrain the type to being a float
-        return Math.tan(a);
+    tan(degrees) {
+        if (isNaN(a)) {
+            console.log("method sin called with NaN");
+            return null;
+        }
+        return Math.tan(degrees * (Math.PI / 180));
     }
 }
 
 obj = new Calculator();
 
-console.log(obj.addition(1.5, 2.2));
+console.log(obj.sin(90));
