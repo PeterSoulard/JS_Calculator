@@ -54,17 +54,22 @@ class Calculator {
         this.degrees_mode = !this.degrees_mode;
     }
 
+    /* Called at the end of each trig method, to check if the input is in degrees or radians.
+     */
+    convertMode(a) {
+        if (this.degrees_mode) {
+            a *= (Math.PI / 180);
+        }
+        return a;
+    }
+
     sine(a) {
         if (isNaN(a)) {
             console.log("method sine called with NaN");
             return null;
         }
 
-        if (this.degrees_mode) {
-            a *= (Math.PI / 180);
-        }
-
-        return Math.sin(a);
+        return Math.sin(this.convertMode(a));
     }
 
     cosine(a) {
@@ -73,11 +78,7 @@ class Calculator {
             return null;
         }
 
-        if (this.degrees_mode) {
-            a *= (Math.PI / 180);
-        }
-
-        return Math.cos(a);
+        return Math.cos(this.convertMode(a));
     }
 
     tangent(a) {
@@ -86,11 +87,7 @@ class Calculator {
             return null;
         }
 
-        if (this.degrees_mode) {
-            a *= (Math.PI / 180);
-        }
-
-        return Math.tan(a);
+        return Math.tan(this.convertMode(a));
     }
 
     cosecant(a) {
@@ -99,11 +96,7 @@ class Calculator {
             return null;
         }
 
-        if (this.degrees_mode) {
-            a *= (Math.PI / 180);
-        }
-
-        return 1 / Math.sin(a);
+        return 1 / Math.sin(this.convertMode(a));
     }
 
     secant(a) {
@@ -112,11 +105,7 @@ class Calculator {
             return null;
         }
 
-        if (this.degrees_mode) {
-            a *= (Math.PI / 180);
-        }
-
-        return 1 / Math.cos(a);
+        return 1 / Math.cos(this.convertMode(a));
     }
 
     cotangent(a) {
@@ -125,11 +114,7 @@ class Calculator {
             return null;
         }
 
-        if (this.degrees_mode) {
-            a *= (Math.PI / 180);
-        }
-
-        return 1 / Math.tan(a);
+        return 1 / Math.tan(this.convertMode(a));
     }
 }
 
