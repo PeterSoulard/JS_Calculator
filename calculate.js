@@ -4,7 +4,7 @@
  * - subtraction
  * - multiplication
  * - division
- * As well as the following trig operations:
+ * As well as the following trig operations (doable in both degree mode and radian mode):
  * - sin
  * - cos
  * - tan
@@ -12,6 +12,7 @@
 class Calculator {
     constructor() {
         this.memory = [];
+        this.degrees_mode = true;
     }
 
     addition(a, b) {
@@ -46,31 +47,52 @@ class Calculator {
         return a / b;
     }
 
-    sin(degrees) {
-        if (isNaN(a)) {
-            console.log("method sin called with NaN");
-            return null;
-        }
-        return Math.sin(degrees * (Math.PI / 180));
+    toggleDegreesRadians() {
+        this.degrees_mode = !this.degrees_mode;
     }
 
-    cos(degrees) {
+    sin(a) {
         if (isNaN(a)) {
             console.log("method sin called with NaN");
             return null;
         }
-        return Math.cos(degrees * (Math.PI / 180));
+
+        if (this.degrees_mode) {
+            a *= (Math.PI / 180);
+        }
+
+        return Math.sin(a);
     }
 
-    tan(degrees) {
+    cos(a) {
         if (isNaN(a)) {
             console.log("method sin called with NaN");
             return null;
         }
-        return Math.tan(degrees * (Math.PI / 180));
+
+        if (this.degrees_mode) {
+            a *= (Math.PI / 180);
+        }
+
+        return Math.cos(a);
+    }
+
+    tan(a) {
+        if (isNaN(a)) {
+            console.log("method sin called with NaN");
+            return null;
+        }
+
+        if (this.degrees_mode) {
+            a *= (Math.PI / 180);
+        }
+
+        return Math.tan(a);
     }
 }
 
 obj = new Calculator();
 
+console.log(obj.sin(90));
+obj.toggleDegreesRadians();
 console.log(obj.sin(90));
