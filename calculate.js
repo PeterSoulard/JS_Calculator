@@ -1,23 +1,17 @@
-/* This calculator class is able to perform calculations and store a certain number of intermediate results in memory.
- * The calculator will first contain at least the following MVP operations:
- * - addition
- * - subtraction
- * - multiplication
- * - division
- * As well as the following trig operations (doable in both degree mode and radian mode):
- * - sine
- * - cosine
- * - tangent
- * - cosecant
- * - secant
- * - cotangent
- */
 class Calculator {
+    /* A calculator object needs to have in memory:
+     * - The last succesfully calculated value.
+     * - Whether or not it is in degree mode, false means radians mode.
+     */
     constructor() {
         this.memory = null;
         this.degrees_mode = true;
     }
 
+    /* Three simple calculations for +, -, * and /.
+     * Return: The result of the claculation. OR
+     *         null if the input is not a number.
+     */
     addition(a, b) {
         if (isNaN(a) || isNaN(b)) {
             console.log("method addition called with NaN");
@@ -28,7 +22,6 @@ class Calculator {
 
         return a + b;
     }
-
     subtraction(a, b) {
         if (isNaN(a) || isNaN(b)) {
             console.log("method subtraction called with NaN");
@@ -39,7 +32,6 @@ class Calculator {
 
         return a - b;
     }
-
     multiplication(a, b) {
         if (isNaN(a) || isNaN(b)) {
             console.log("method multiplication called with NaN");
@@ -50,7 +42,6 @@ class Calculator {
 
         return a * b;
     }
-
     division(a, b) {
         if (isNaN(a) || isNaN(b)) {
             console.log("method division called with NaN");
@@ -61,12 +52,12 @@ class Calculator {
 
         return a / b;
     }
-
     toggleDegreesRadians() {
         this.degrees_mode = !this.degrees_mode;
     }
 
-    /* Called at the end of each trig method, to check if the input is in degrees or radians.
+    /* Called at the end of each trig method,
+     * to check if the input is in degrees or radians.
      */
     convertMode(a) {
         if (this.degrees_mode) {
@@ -76,6 +67,12 @@ class Calculator {
         return a;
     }
 
+    /* Six trigonometric functions, each with a NaN check and a chained method
+     * call to convert degrees to radians if this is needed.
+     * Return: The result of the calculation. OR
+     *         null if the input is not a number, or if the input is a multiple
+     *             of pi in which case a division by zero would occur.
+     */
     sine(a) {
         if (isNaN(a)) {
             console.log("method sine called with NaN");
@@ -85,7 +82,6 @@ class Calculator {
 
         return Math.sin(this.convertMode(a));
     }
-
     cosine(a) {
         if (isNaN(a)) {
             console.log("method cosine called with NaN");
@@ -95,7 +91,6 @@ class Calculator {
 
         return Math.cos(this.convertMode(a));
     }
-
     tangent(a) {
         if (isNaN(a)) {
             console.log("method tangent called with NaN");
@@ -105,7 +100,6 @@ class Calculator {
 
         return Math.tan(this.convertMode(a));
     }
-
     cosecant(a) {
         if (isNaN(a)) {
             console.log("method cosecant called with NaN");
@@ -122,7 +116,6 @@ class Calculator {
 
         return 1 / sine;
     }
-
     secant(a) {
         if (isNaN(a)) {
             console.log("method secant called with NaN");
@@ -139,7 +132,6 @@ class Calculator {
 
         return 1 / cosine;
     }
-
     cotangent(a) {
         if (isNaN(a)) {
             console.log("method cotangent called with NaN");
@@ -157,8 +149,3 @@ class Calculator {
         return 1 / tangens;
     }
 }
-
-obj = new Calculator();
-
-console.log(obj.addition("1", "2"));
-console.log(obj.subtraction(10, "0"));
