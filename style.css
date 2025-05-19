@@ -1,0 +1,16 @@
+body {
+    background-color: lightblue;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+#calculator-box {
+    display: flex;
+    width: 1500px;
+    height: 5000px;
+    background-color: lightcyan;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    border-radius: 20px;
+}
