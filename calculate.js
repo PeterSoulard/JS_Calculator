@@ -23,6 +23,7 @@ class Calculator {
             console.log("method addition called with NaN");
             return null;
         }
+
         return a + b;
     }
 
@@ -31,6 +32,7 @@ class Calculator {
             console.log("method subtraction called with NaN");
             return null;
         }
+
         return a - b;
     }
 
@@ -39,6 +41,7 @@ class Calculator {
             console.log("method multiplication called with NaN");
             return null;
         }
+
         return a * b;
     }
 
@@ -47,6 +50,7 @@ class Calculator {
             console.log("method division called with NaN");
             return null;
         }
+
         return a / b;
     }
 
@@ -60,6 +64,7 @@ class Calculator {
         if (this.degrees_mode) {
             a *= (Math.PI / 180);
         }
+
         return a;
     }
 
@@ -96,7 +101,14 @@ class Calculator {
             return null;
         }
 
-        return 1 / Math.sin(this.convertMode(a));
+        let sine = Math.sin(this.convertMode(a));
+
+        if (sine == 0) {
+            console.log("cosecant of the input value in undefined");
+            return null;
+        }
+
+        return 1 / sine;
     }
 
     secant(a) {
@@ -105,7 +117,14 @@ class Calculator {
             return null;
         }
 
-        return 1 / Math.cos(this.convertMode(a));
+        let cosine = Math.cos(this.convertMode(a));
+
+        if (cosine == 0) {
+            console.log("secant of the input value in undefined");
+            return null;
+        }
+
+        return 1 / cosine;
     }
 
     cotangent(a) {
@@ -114,7 +133,14 @@ class Calculator {
             return null;
         }
 
-        return 1 / Math.tan(this.convertMode(a));
+        let tangens = Math.tan(this.convertMode(a));
+
+        if (tangens == 0) {
+            console.log("cotangent of the input value in undefined");
+            return null;
+        }
+
+        return 1 / tangens;
     }
 }
 
