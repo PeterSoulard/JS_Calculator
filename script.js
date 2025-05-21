@@ -200,7 +200,7 @@ document.addEventListener("DOMContentLoaded", function() {
             case "tan":
                 textOnScreen += command;
                 if (inverted) {
-                    textOnScreen += "^-1";
+                    textOnScreen += "⁻¹";
                 }
                 textOnScreen += "("
                 break;
@@ -210,6 +210,15 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
                 break;
             case "SHIFT":
+                ["sine", "cosine", "tangent"].forEach(function(func) {
+                    text = document.getElementById(func).innerHTML;
+                    if (inverted) {
+                        text = text.slice(0, -2);
+                    } else {
+                        text = text + "⁻¹";
+                    }
+                    document.getElementById(func).innerHTML = text;
+                })
                 inverted = !inverted;
                 break;
             case "clear":
