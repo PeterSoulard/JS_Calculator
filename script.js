@@ -152,6 +152,16 @@ class Calculator {
 
         return 1 / tangens;
     }
+
+    evaluate(expression) {
+        try {
+            let answer = eval(expression);
+            this._memory = answer;
+            return answer;
+        } catch (error) {
+            return "error";
+        }
+    }
 }
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -180,11 +190,11 @@ document.addEventListener("DOMContentLoaded", function() {
                 break;
             case "ANS":
                 if (calculator.memory) {
-                    textOnScreen += calculator.memory;
+                    textOnScreen += calculator.memory.toString();
                 }
                 break;
             case "=":
-                // TODO: Evaluate expression and replace the text on screen with the result.
+                textOnScreen = calculator.evaluate(textOnScreen);
                 break;
             case "SHIFT":
                 inverted = !inverted;
