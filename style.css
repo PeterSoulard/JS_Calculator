@@ -43,12 +43,11 @@ body {
 #numbers-section {
     width: 60%;
     display: flex;
-    margin: 55px;
-    margin-right: 20px;
+    margin: 30px;
     flex-wrap: wrap;
     justify-content: space-between;
-    padding: 40px;
-
+    padding: 20px;
+    margin-right: 0px;
 
     background-color: green;
 }
@@ -56,9 +55,11 @@ body {
 #operators-section {
     width: 40%;
     display: flex;
-    margin: 55px;
-    margin-left: 20px;
-    padding: 40px;
+    padding: 20px;
+    padding-right: 100px;
+    padding-left: 60px;
+    margin: 30px;
+    margin-left: 0px;
     flex-wrap: wrap;
     justify-content: space-between;
 
@@ -68,10 +69,12 @@ body {
 
 .button {
     height: 100px;
+    width: 100px;
     display: flex;
     justify-content: center;
     background-color: yellow;
     align-items: center;
+    margin: 20px;
 }
 
 .column {
