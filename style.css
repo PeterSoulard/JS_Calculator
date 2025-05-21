@@ -18,11 +18,28 @@ body {
     border-radius: 20px;
 }
 
+#top-section {
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    padding: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+#top-section .button {
+    height: 150px;
+    width: 150px;
+    margin-top: 70px;
+}
+
 /* The textbox where the calculations are displayed.
  * It's at the top of the calculator.
  */
 #calculation-textbox {
-    width: 90%;
+    width: 80%;
     height: 150px;
     background-color: white;
     margin: 0 auto;
