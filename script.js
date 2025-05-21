@@ -159,6 +159,7 @@ class Calculator {
             this._memory = answer;
             return answer;
         } catch (error) {
+            alert(error);
             return "error";
         }
     }
@@ -170,9 +171,12 @@ document.addEventListener("DOMContentLoaded", function() {
     let inverted = false;
     let textOnScreen = "";
     let buttonMappings = [
-        "backspace",
-        "1", "4", "7", "ANS", "2", "5", "8", "0", "3", "6", "9", "=",
-        "+", "-", "sin", "cos", "*", "/", "tan", "SHIFT"
+        "1", "4", "7", "ANS",
+        "2", "5", "8", "0",
+        "3", "6", "9", "=",
+        "+", "-", "sin", "cos",
+        "*", "/", "tan", "SHIFT",
+        ")", "backspace", "clear", "?"
     ]
 
     function updateScreen() {
@@ -183,11 +187,6 @@ document.addEventListener("DOMContentLoaded", function() {
         let command = buttonMappings[id];
 
         switch (command) {
-            case "backspace":
-                if (textOnScreen.length > 0) {
-                    textOnScreen = textOnScreen.slice(0, -1);
-                }
-                break;
             case "ANS":
                 if (calculator.memory) {
                     textOnScreen += calculator.memory.toString();
@@ -195,9 +194,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 break;
             case "=":
                 textOnScreen = calculator.evaluate(textOnScreen);
-                break;
-            case "SHIFT":
-                inverted = !inverted;
                 break;
             case "sin":
             case "cos":
@@ -207,7 +203,20 @@ document.addEventListener("DOMContentLoaded", function() {
                     textOnScreen += "^-1";
                 }
                 textOnScreen += "("
-                // TODO: Add a closing parenthesis button.
+                break;
+            case "backspace":
+                if (textOnScreen.length > 0) {
+                    textOnScreen = textOnScreen.slice(0, -1);
+                }
+                break;
+            case "SHIFT":
+                inverted = !inverted;
+                break;
+            case "clear":
+                textOnScreen = "";
+                break;
+            case "?":
+                // TODO: Remove these temporary questions marks.
                 break;
             default:
                 textOnScreen += command;
