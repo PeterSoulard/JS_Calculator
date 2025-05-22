@@ -166,6 +166,10 @@ class Calculator {
 
             let tokens = expression.match(allowedTokens);
 
+            if (tokens.join("") != expression) {
+                throw new Error("Malformed expression");
+            }
+
             // Evaluate the inverse trig functions
             for (let i = 0; i < tokens.length; i++) {
                 if (tokens[i].startsWith("sin⁻¹")) {
