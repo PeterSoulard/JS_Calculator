@@ -155,12 +155,102 @@ class Calculator {
 
     evaluate(expression) {
         try {
-            let answer = eval(expression);
+            let patterns = [
+                "\\d+", // Numbers
+                "[+\\-*/]", // Operators
+                "sin\\(\\d+\\)", "cos\\(\\d+\\)", "tan\\(\\d+\\)", // Trigonometric functions
+                "sin⁻¹\\(\\d+\\)", "cos⁻¹\\(\\d+\\)", "tan⁻¹\\(\\d+\\)" // Inverse trig functions
+            ]
+
+            let allowedTokens = new RegExp(patterns.join("|"), "g");
+
+            let tokens = expression.match(allowedTokens);
+
+            // Evaluate the inverse trig functions
+            for (let i = 0; i < tokens.length; i++) {
+                if (tokens[i].startsWith("sin⁻¹")) {
+                    tokens[i] = this.cosecant(tokens[i].slice(6, -1)).toString();
+                } else if (tokens[i].startsWith("cos⁻¹")) {
+                    tokens[i] = this.secant(tokens[i].slice(6, -1)).toString();
+                } else if (tokens[i].startsWith("tan⁻¹")) {
+                    tokens[i] = this.cotangent(tokens[i].slice(6, -1)).toString();
+                }
+            }
+
+            // Evaluate the trig functions
+            for (let i = 0; i < tokens.length; i++) {
+                if (tokens[i].startsWith("sin")) {
+                    tokens[i] = this.sine(tokens[i].slice(4, -1)).toString();
+                } else if (tokens[i].startsWith("cos")) {
+                    tokens[i] = this.cosine(tokens[i].slice(4, -1)).toString();
+                } else if (tokens[i].startsWith("tan")) {
+                    tokens[i] = this.tangent(tokens[i].slice(4, -1)).toString();
+                }
+            }
+
+            function check_binary_expression(tokens, i) {
+                if (i <= 0 || i >= (tokens.length - 1)) {
+                    throw new Error("Malformed expression");
+                }
+                let left = tokens[i-1];
+                let right = tokens[i+1];
+
+                if (!(/^[0-9]+$/.test(left)) || !(/^[0-9]+$/.test(right))) {
+                    throw new Error("Malformed expression");
+                }
+
+                return [left, right]
+            }
+
+            // Multiplication and division first (please forgive me for editing
+            // the array while looping over it, I promise I've thought it through)
+            for (let i = 0; i < tokens.length; i++) {
+                if (tokens[i] == "*") {
+                    let left, right;
+                    [left, right] = check_binary_expression(tokens, i);
+                    let answer = this.multiplication(left, right);
+                    tokens[i-1] = answer.toString();
+                    delete tokens[i];
+                    delete tokens[i];
+                    i -= 1;
+                } else if (tokens[i] == "/") {
+                    let left, right;
+                    [left, right] = check_binary_expression(tokens, i);
+                    let answer = this.division(left, right);
+                    tokens[i-1] = answer.toString();
+                    delete tokens[i];
+                    delete tokens[i];
+                    i -= 1;
+                }
+            }
+
+            // Addition and subtraction
+            for (let i = 0; i < tokens.length; i++) {
+                if (tokens[i] == "+") {
+                    let left, right;
+                    [left, right] = check_binary_expression(tokens, i);
+                    let answer = this.addition(left, right);
+                    tokens[i-1] = answer.toString();
+                    delete tokens[i];
+                    delete tokens[i];
+                    i -= 1;
+                } else if (tokens[i] == "-") {
+                    let left, right;
+                    [left, right] = check_binary_expression(tokens, i);
+                    let answer = this.subtraction(left, right);
+                    tokens[i-1] = answer.toString();
+                    delete tokens[i];
+                    delete tokens[i];
+                    i -= 1;
+                }
+            }
+
+            let answer = tokens[0];
+
             this._memory = answer;
             return answer;
         } catch (error) {
-            alert(error);
-            return "error";
+            return "Error";
         }
     }
 }
