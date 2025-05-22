@@ -8,6 +8,8 @@ class Calculator {
         this._degrees_mode = true;
     }
 
+    /* Getter function for the private memory attribute.
+     */
     get memory() {
         return this._memory;
     }
@@ -56,6 +58,10 @@ class Calculator {
 
         return a / b;
     }
+
+    /* Toggles the boolean degrees mode between true and false,
+     * used only by the corresponding calculator button.
+     */
     toggleDegreesRadians() {
         this._degrees_mode = !this._degrees_mode;
     }
@@ -153,6 +159,16 @@ class Calculator {
         return 1 / tangens;
     }
 
+    /* This method evaluates the given expression. Regexes first tokenize the
+     * expression, then the operations are evaluated. The expressions inside
+     * of the trigonometric functions are used in a recursive call to the same
+     * function until a numeric value is calculated. The regex matching is set
+     * to greedy to get matches that are as long as possible, to match numbers
+     * consisting of multiple digits. This means that trig functions with
+     * multiple trig functions cause problems because of the parentheses.
+     * A solution would be to use a stack to create a tree-like structure out
+     * of an expression, even allowing us to use parentheses in general.
+     */
     evaluate(expression) {
         try {
             let patterns = [
@@ -170,7 +186,8 @@ class Calculator {
                 throw new Error("Malformed expression");
             }
 
-            // Evaluate the inverse trig functions
+            /* Evaluate the inverse trig functions
+             */
             for (let i = 0; i < tokens.length; i++) {
                 if (tokens[i].startsWith("sin⁻¹")) {
                     tokens[i] = this.cosecant(this.evaluate(tokens[i].slice(6, -1))).toString();
@@ -181,7 +198,8 @@ class Calculator {
                 }
             }
 
-            // Evaluate the trig functions
+            /* Evaluate the trig functions
+             */
             for (let i = 0; i < tokens.length; i++) {
                 if (tokens[i].startsWith("sin")) {
                     tokens[i] = this.sine(this.evaluate(tokens[i].slice(4, -1))).toString();
@@ -192,6 +210,9 @@ class Calculator {
                 }
             }
 
+            /* This nested function is only used below, and is to make sure
+             * binary operators are surrounded by numbers.
+             */
             function check_binary_expression(tokens, i) {
                 if (i <= 0 || i >= (tokens.length - 1)) {
                     throw new Error("Malformed expression");
@@ -206,8 +227,9 @@ class Calculator {
                 return [left, right]
             }
 
-            // Multiplication and division first (please forgive me for editing
-            // the array while looping over it, I promise I've thought it through)
+            /* Multiplication and division first (please forgive me for editing
+             * the array while looping over it, I promise I've thought it through)
+             */
             for (let i = 0; i < tokens.length; i++) {
                 if (tokens[i] == "*") {
                     let left, right;
@@ -226,7 +248,8 @@ class Calculator {
                 }
             }
 
-            // Addition and subtraction
+            /* Addition and subtraction
+             */
             for (let i = 0; i < tokens.length; i++) {
                 if (tokens[i] == "+") {
                     let left, right;
@@ -259,12 +282,14 @@ class Calculator {
     }
 }
 
+/* When the page loads, create a calculator object and define some variables.
+ */
 document.addEventListener("DOMContentLoaded", function() {
     const calculator = new Calculator();
 
     let inverted = false;
     let textOnScreen = "";
-    let buttonMappings = [
+    const buttonMappings = [
         "1", "4", "7", "ANS",
         "2", "5", "8", "0",
         "3", "6", "9", "=",
@@ -278,6 +303,12 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("calculation-textbox").innerHTML = textOnScreen;
     }
 
+    /* This function gets called when the user clicks a button.
+     * The id is the index in the list of all possible buttons it could be.
+     * Depending on what the button is, different operations are called.
+     * Most buttons just get added to the calculator screen. After each button
+     * press, the screen gets updated.
+     */
     function buttonClicked(id) {
         let command = buttonMappings[id];
 
@@ -336,6 +367,9 @@ document.addEventListener("DOMContentLoaded", function() {
         updateScreen();
     }
 
+    /* For each button, listen until it is clicked,
+     * and then call the above function with its index.
+     */
     let buttons = document.getElementsByClassName("button");
     for (let i = 0; i < buttons.length; i++) {
         document.getElementsByClassName("button")[i].addEventListener("click", function() {
