@@ -174,9 +174,10 @@ document.addEventListener("DOMContentLoaded", function() {
         "1", "4", "7", "ANS",
         "2", "5", "8", "0",
         "3", "6", "9", "=",
-        "+", "-", "sin", "cos",
-        "*", "/", "tan", "SHIFT",
-        ")", "backspace", "clear", "deg/rad"
+
+        ")", "SHIFT", "+", "-",
+        "clear", "deg/rad", "*", "/",
+        "backspace", "sin", "cos", "tan"
     ]
 
     function updateScreen() {
