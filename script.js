@@ -158,8 +158,8 @@ class Calculator {
             let patterns = [
                 "\\d+", // Numbers
                 "[+\\-*/]", // Operators
-                "sin\\(\\d+\\)", "cos\\(\\d+\\)", "tan\\(\\d+\\)", // Trigonometric functions
-                "sin⁻¹\\(\\d+\\)", "cos⁻¹\\(\\d+\\)", "tan⁻¹\\(\\d+\\)" // Inverse trig functions
+                "sin\\(.+\\)", "cos\\(.+\\)", "tan\\(.+\\)", // Trigonometric functions
+                "sin⁻¹\\(.+\\)", "cos⁻¹\\(.+\\)", "tan⁻¹\\(.+\\)" // Inverse trig functions
             ]
 
             let allowedTokens = new RegExp(patterns.join("|"), "g");
@@ -173,22 +173,22 @@ class Calculator {
             // Evaluate the inverse trig functions
             for (let i = 0; i < tokens.length; i++) {
                 if (tokens[i].startsWith("sin⁻¹")) {
-                    tokens[i] = this.cosecant(tokens[i].slice(6, -1)).toString();
+                    tokens[i] = this.cosecant(this.evaluate(tokens[i].slice(6, -1))).toString();
                 } else if (tokens[i].startsWith("cos⁻¹")) {
-                    tokens[i] = this.secant(tokens[i].slice(6, -1)).toString();
+                    tokens[i] = this.secant(this.evaluate(tokens[i].slice(6, -1))).toString();
                 } else if (tokens[i].startsWith("tan⁻¹")) {
-                    tokens[i] = this.cotangent(tokens[i].slice(6, -1)).toString();
+                    tokens[i] = this.cotangent(this.evaluate(tokens[i].slice(6, -1))).toString();
                 }
             }
 
             // Evaluate the trig functions
             for (let i = 0; i < tokens.length; i++) {
                 if (tokens[i].startsWith("sin")) {
-                    tokens[i] = this.sine(tokens[i].slice(4, -1)).toString();
+                    tokens[i] = this.sine(this.evaluate(tokens[i].slice(4, -1))).toString();
                 } else if (tokens[i].startsWith("cos")) {
-                    tokens[i] = this.cosine(tokens[i].slice(4, -1)).toString();
+                    tokens[i] = this.cosine(this.evaluate(tokens[i].slice(4, -1))).toString();
                 } else if (tokens[i].startsWith("tan")) {
-                    tokens[i] = this.tangent(tokens[i].slice(4, -1)).toString();
+                    tokens[i] = this.tangent(this.evaluate(tokens[i].slice(4, -1))).toString();
                 }
             }
 
