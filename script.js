@@ -176,7 +176,7 @@ document.addEventListener("DOMContentLoaded", function() {
         "3", "6", "9", "=",
         "+", "-", "sin", "cos",
         "*", "/", "tan", "SHIFT",
-        ")", "backspace", "clear", "?"
+        ")", "backspace", "clear", "deg/rad"
     ]
 
     function updateScreen() {
@@ -224,8 +224,15 @@ document.addEventListener("DOMContentLoaded", function() {
             case "clear":
                 textOnScreen = "";
                 break;
-            case "?":
-                // TODO: Remove these temporary questions marks.
+            case "deg/rad":
+                calculator.toggleDegreesRadians();
+                text = document.getElementById("deg/rad").innerHTML;
+                if (text == "deg") {
+                    text = "rad";
+                } else {
+                    text = "deg";
+                }
+                document.getElementById("deg/rad").innerHTML = text;
                 break;
             default:
                 textOnScreen += command;
