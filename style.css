@@ -85,7 +85,7 @@ body {
 }
 
 .column {
-    width: 30%;
+    width: 140px;
     display: flex;
     flex-direction: column;
     justify-content: center;
