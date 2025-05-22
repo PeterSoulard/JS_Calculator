@@ -214,16 +214,14 @@ class Calculator {
                     [left, right] = check_binary_expression(tokens, i);
                     let answer = this.multiplication(left, right);
                     tokens[i-1] = answer.toString();
-                    delete tokens[i];
-                    delete tokens[i];
+                    tokens.splice(i, 2);
                     i -= 1;
                 } else if (tokens[i] == "/") {
                     let left, right;
                     [left, right] = check_binary_expression(tokens, i);
                     let answer = this.division(left, right);
                     tokens[i-1] = answer.toString();
-                    delete tokens[i];
-                    delete tokens[i];
+                    tokens.splice(i, 2);
                     i -= 1;
                 }
             }
@@ -235,18 +233,20 @@ class Calculator {
                     [left, right] = check_binary_expression(tokens, i);
                     let answer = this.addition(left, right);
                     tokens[i-1] = answer.toString();
-                    delete tokens[i];
-                    delete tokens[i];
+                    tokens.splice(i, 2);
                     i -= 1;
                 } else if (tokens[i] == "-") {
                     let left, right;
                     [left, right] = check_binary_expression(tokens, i);
                     let answer = this.subtraction(left, right);
                     tokens[i-1] = answer.toString();
-                    delete tokens[i];
-                    delete tokens[i];
+                    tokens.splice(i, 2);
                     i -= 1;
                 }
+            }
+
+            if (tokens.length != 1) {
+                throw new Error("Unexpected operator in the expression");
             }
 
             let answer = tokens[0];
