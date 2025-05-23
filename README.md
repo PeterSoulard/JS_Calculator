@@ -14,6 +14,5 @@ The calculator supports the four basic binary operations **addition**, **subtrac
 ## Limitations
 Although most use-cases have been thought of when creating this application, there are some functionalities that are not yet present in this version of the JS Calculator. These may be implemented in a future version.
 
-* The trigonometric functions are the only use for parentheses, which is the reason why you only see a button for the closing bracket. The trig functions may be nested, but you cannot place two trig functions within the parentheses of a trig function. Example -> Allowed: **sin(90 × sin(90))**. Not allowed: **sin(sin(90) + sin(90))**.
-
+* The trigonometric functions are the only use for parentheses, which is the reason why you only see a button for the closing bracket. The trig functions may be nested, but you cannot place two trig functions within the indentation level. Example -> Allowed: **sin(90 × sin(90))**. Not allowed: **sin(sin(90) + sin(90))**.
 * In general, parentheses are not supported outside of the trigonometric functions. To support this functionality and to solve the above limitation, the evaluation function could be written using a tree structure.
