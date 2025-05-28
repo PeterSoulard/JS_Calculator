@@ -159,36 +159,59 @@ class Calculator {
         return 1 / tangens;
     }
 
+    /* This method is called when an opening parenthesis is encountered.
+     * It finds the corresponding closing parenthesis and replaces it with the
+     * evaluation result of the parentheses. Argument 'func' is the function
+     * that should be called on the contents of the parentheses. This is null
+     * if the parentheses are not because of a trig function call.
+     */
+    close_parentheses(rest, func, expression) {
+
+        let stack = 0;
+
+        for (let i = 0; i < rest.length; i++) {
+            switch (rest[i]) {
+                case '(':
+                    stack++;
+                    break;
+                case ')':
+                    if (stack == 0) {
+                        let result = rest.slice(0, i);
+                        let endindex = i - rest.length + 1;
+
+                        if (endindex == 0) {
+                            endindex = expression.length;
+                        }
+                        result = this.evaluate(result);
+                        let oldstring;
+                        if (func) {
+                            result = func(result);
+                            oldstring = expression.slice(i, endindex);
+                        } else {
+                            oldstring = expression.slice(i - 3, endindex);
+                        }
+                        result = result.toString();
+
+                        return [result, oldstring];
+                    }
+                    stack--;
+                default:
+                    continue;
+            }
+        }
+
+        throw new Error("Unmatched function.");
+    }
+
     /* This method processes the trigonometric functions and returning the
      * string without them. It does so by finding the calls to the trig
      * functions and replacing them by the result of the call. It repeats this
      * process until there are no more trig calls left.
      */
     process_trig_functions(expression) {
-        function backtrack(rest) {
-
-            let stack = 0;
-
-            for (let i = 0; i < rest.length; i++) {
-                switch (rest[i]) {
-                    case '(':
-                        stack++;
-                        break;
-                    case ')':
-                        if (stack == 0) {
-                            return [rest.slice(0, i), i - rest.length + 1];
-                        }
-                        stack--;
-                    default:
-                        continue;
-                }
-            }
-
-            throw new Error("Unmatched function.");
-        }
 
         let retry = false;
-        let result, endindex, oldstring;
+        let result, oldstring;
 
         do {
             retry = false;
@@ -220,16 +243,32 @@ class Calculator {
                     continue;
                 }
 
-                [result, endindex] = backtrack(expression.slice(i + slicelength));
-                if (endindex == 0) {
-                    endindex = expression.length;
-                }
-                result = this.evaluate(result);
-                result = func(result);
-                result = result.toString();
-                oldstring = expression.slice(i, endindex);
+                [result, oldstring] = this.close_parentheses(expression.slice(i + slicelength), func, expression);
                 expression = expression.replace(oldstring, result);
                 retry = true;
+            }
+        } while (retry);
+
+        return expression;
+    }
+
+    /* This method handles the parentheses in the expression, and it replaces
+     * them by the result of a recursive evaluation call.
+     */
+    process_parentheses(expression) {
+        let retry = false;
+        let result, oldstring;
+
+        do {
+            retry = false;
+            for (let i = 0; i < expression.length; i++) {
+
+                if (expression[i] == '(') {
+                    [result, oldstring] = this.close_parentheses(expression.slice(i + 1), null, expression);
+                    expression = expression.replace(oldstring, result);
+                    retry = true;
+                    break;
+                }
             }
         } while (retry);
 
@@ -319,15 +358,17 @@ class Calculator {
     }
 
     /* This method evaluates the given expression. First the trigonometric
-     * functions are evaluated, then the binary operators. This method may
-     * be called recursively from the trigonometric functions with a substring
-     * that is always smaller than the original expression.
+     * functions are evaluated, then the parentheses, then the binary operators.
+     * This method may be called recursively from the trigonometric functions
+     * with a substring that is always smaller than the original expression.
      */
     evaluate(expression) {
 
         try {
 
             expression = this.process_trig_functions(expression);
+
+            expression = this.process_parentheses(expression);
 
             let answer = this.process_binary_operators(expression);
 
@@ -349,13 +390,12 @@ document.addEventListener("DOMContentLoaded", function() {
     let inverted = false;
     let textOnScreen = "";
     const buttonMappings = [
-        "1", "4", "7", "ANS",
-        "2", "5", "8", "0",
-        "3", "6", "9", "=",
+        "1", "4", "7", "ANS", "sin",
+        "2", "5", "8", "0", "cos",
+        "3", "6", "9", "=", "tan",
 
-        ")", "SHIFT", "+", "-",
-        "clear", "deg/rad", "*", "/",
-        "backspace", "sin", "cos", "tan"
+        "clear", "(", "+", "-", "SHIFT",
+        "backspace", ")", "*", "/", "deg/rad"
     ]
 
     function updateScreen() {

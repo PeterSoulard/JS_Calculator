@@ -11,7 +11,7 @@ body {
  */
 #calculator-box {
     width: 1100px;
-    height: 800px;
+    height: 900px;
     background-color: lightcyan;
     margin-top: 50px;
     margin-bottom: 50px;
@@ -48,7 +48,7 @@ body {
  * grid of buttons, mostly numbers.
  */
 #numbers-section {
-    width: 50%;
+    width: 60%;
     display: flex;
     margin: 30px;
     justify-content: center;
@@ -65,7 +65,7 @@ body {
  * contains a grid of buttons, mostly operations.
  */
 #operators-section {
-    width: 50%;
+    width: 40%;
     display: flex;
     padding: 20px;
     padding-right: 65px;
