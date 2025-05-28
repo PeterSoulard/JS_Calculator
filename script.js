@@ -170,12 +170,59 @@ class Calculator {
      * of an expression, even allowing us to use parentheses in general.
      */
     evaluate(expression) {
+
         try {
+            function backtrack(rest) {
+
+                let stack = 0;
+
+                for (let i = 0; i < rest.length; i++) {
+                    switch (rest[i]) {
+                        case '(':
+                            stack++;
+                            break;
+                        case ')':
+                            if (stack == 0) {
+                                return [rest.slice(0, i), i - rest.length + 1];
+                            }
+                            stack--;
+                        default:
+                            continue;
+                    }
+                }
+
+                throw new Error("Unmatched function.");
+            }
+
+            let retry = false;
+            let result, endindex, oldstring;
+
+            do {
+                retry = false;
+                for (let i = 0; i < expression.length - 3; i++) {
+                    let check = expression.slice(i, i+4);
+
+                    switch (check) {
+                        case "sin(":
+                            [result, endindex] = backtrack(expression.slice(i+4));
+                            if (endindex == 0) {
+                                endindex = expression.length;
+                            }
+                            result = this.evaluate(result);
+                            result = this.sine(result).toString();
+                            oldstring = expression.slice(i, endindex);
+                            expression = expression.replace(oldstring, result);
+                            retry = true;
+                            break;
+                        default:
+                            continue;
+                    }
+                }
+            } while (retry);
+
             let patterns = [
                 "\\d+", // Numbers
-                "[+\\-*/]", // Operators
-                "sin\\(.+\\)", "cos\\(.+\\)", "tan\\(.+\\)", // Trigonometric functions
-                "sin⁻¹\\(.+\\)", "cos⁻¹\\(.+\\)", "tan⁻¹\\(.+\\)" // Inverse trig functions
+                "[+\\-*/]" // Operators
             ]
 
             let allowedTokens = new RegExp(patterns.join("|"), "g");
@@ -184,30 +231,6 @@ class Calculator {
 
             if (tokens.join("") != expression) {
                 throw new Error("Malformed expression");
-            }
-
-            /* Evaluate the inverse trig functions
-             */
-            for (let i = 0; i < tokens.length; i++) {
-                if (tokens[i].startsWith("sin⁻¹")) {
-                    tokens[i] = this.cosecant(this.evaluate(tokens[i].slice(6, -1))).toString();
-                } else if (tokens[i].startsWith("cos⁻¹")) {
-                    tokens[i] = this.secant(this.evaluate(tokens[i].slice(6, -1))).toString();
-                } else if (tokens[i].startsWith("tan⁻¹")) {
-                    tokens[i] = this.cotangent(this.evaluate(tokens[i].slice(6, -1))).toString();
-                }
-            }
-
-            /* Evaluate the trig functions
-             */
-            for (let i = 0; i < tokens.length; i++) {
-                if (tokens[i].startsWith("sin")) {
-                    tokens[i] = this.sine(this.evaluate(tokens[i].slice(4, -1))).toString();
-                } else if (tokens[i].startsWith("cos")) {
-                    tokens[i] = this.cosine(this.evaluate(tokens[i].slice(4, -1))).toString();
-                } else if (tokens[i].startsWith("tan")) {
-                    tokens[i] = this.tangent(this.evaluate(tokens[i].slice(4, -1))).toString();
-                }
             }
 
             /* This nested function is only used below, and is to make sure
