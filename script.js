@@ -199,39 +199,57 @@ class Calculator {
 
             do {
                 retry = false;
-                for (let i = 0; i < expression.length - 3; i++) {
-                    let check = expression.slice(i, i+4);
+                for (let i = 0; i < expression.length; i++) {
 
-                    switch (check) {
-                        case "sin(":
-                            [result, endindex] = backtrack(expression.slice(i+4));
-                            if (endindex == 0) {
-                                endindex = expression.length;
-                            }
-                            result = this.evaluate(result);
-                            result = this.sine(result).toString();
-                            oldstring = expression.slice(i, endindex);
-                            expression = expression.replace(oldstring, result);
-                            retry = true;
-                            break;
-                        default:
-                            continue;
+                    let substring = expression.slice(i);
+                    let slicelength;
+                    let func;
+
+                    if (substring.startsWith("sin(")) {
+                        func = this.sine.bind(this);
+                        slicelength = 4;
+                    } else if (substring.startsWith("cos(")) {
+                        func = this.cosine.bind(this);
+                        slicelength = 4;
+                    } else if (substring.startsWith("tan(")) {
+                        func = this.tangent.bind(this);
+                        slicelength = 4;
+                    } else if (substring.startsWith("sin⁻¹(")) {
+                        func = this.cosecant.bind(this);
+                        slicelength = 6;
+                    } else if (substring.startsWith("cos⁻¹(")) {
+                        func = this.secant.bind(this);
+                        slicelength = 6;
+                    } else if (substring.startsWith("tan⁻¹(")) {
+                        func = this.tangent.bind(this);
+                        slicelength = 6;
+                    } else {
+                        continue;
                     }
+
+                    console.log(substring, func);
+
+                    [result, endindex] = backtrack(expression.slice(i + slicelength));
+                    if (endindex == 0) {
+                        endindex = expression.length;
+                    }
+                    result = this.evaluate(result);
+                    result = func(result);
+                    result = result.toString();
+                    oldstring = expression.slice(i, endindex);
+                    expression = expression.replace(oldstring, result);
+                    retry = true;
                 }
             } while (retry);
 
             let patterns = [
-                "\\d+", // Numbers
+                "\\d+(\\.\\d+)?", // Numbers (possibly floats)
                 "[+\\-*/]" // Operators
             ]
 
             let allowedTokens = new RegExp(patterns.join("|"), "g");
 
             let tokens = expression.match(allowedTokens);
-
-            if (tokens.join("") != expression) {
-                throw new Error("Malformed expression");
-            }
 
             /* This nested function is only used below, and is to make sure
              * binary operators are surrounded by numbers.
@@ -300,6 +318,7 @@ class Calculator {
             this._memory = answer;
             return answer;
         } catch (error) {
+            console.log(error);
             return "Error";
         }
     }
