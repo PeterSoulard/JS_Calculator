@@ -6,6 +6,7 @@ This is a construction using HTML, CSS and JavaScript which forms a calculator. 
 To start up the calculator, simply select the file `index.html` and open it using your browser of choice.
 Using your mouse or trackpad, select the components of the expression you want to compute, and finally select the equals-sign (=). If the expression is correctly formed, the answer should appear on the screen, replacing the expression.
 When using the trigonometric functions, select a function operator, fill in the expression and end with a closing parenthesis. Using the *inv* button, you can toggle between the regular trig functions and their inverses. Using the *rad/deg* button, you can switch between radian mode and degree mode.
+Parentheses allow for earlier evaluation if they are well formed.
 Finally, the arrow to the left removes the previous character from the screen and *clear* clears the entire calculator screen.
 
 ## Functionality
@@ -14,9 +15,9 @@ The calculator supports the four basic binary operations **addition**, **subtrac
 ## Limitations
 Although most use-cases have been thought of when creating this application, there are some functionalities that are not yet present in this version of the JS Calculator. These may be implemented in a future version.
 
-* Parentheses are not supported outside of the trigonometric functions.
+* Currently no outstanding functionalities.
 
 ==================================================
 
 ### Update May 28 2025:
-Changed the way that the evaluator parses the expression. Now multiple calls to trigonometric functions are possible, and parentheses could more easily be implemented.
+Changed the way that the evaluator parses the expression. Now multiple calls to trigonometric functions are possible, and parentheses are implemented as well.
