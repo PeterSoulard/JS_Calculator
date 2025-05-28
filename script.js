@@ -159,163 +159,180 @@ class Calculator {
         return 1 / tangens;
     }
 
-    /* This method evaluates the given expression. Regexes first tokenize the
-     * expression, then the operations are evaluated. The expressions inside
-     * of the trigonometric functions are used in a recursive call to the same
-     * function until a numeric value is calculated. The regex matching is set
-     * to greedy to get matches that are as long as possible, to match numbers
-     * consisting of multiple digits. This means that trig functions with
-     * multiple trig functions cause problems because of the parentheses.
-     * A solution would be to use a stack to create a tree-like structure out
-     * of an expression, even allowing us to use parentheses in general.
+    /* This method processes the trigonometric functions and returning the
+     * string without them. It does so by finding the calls to the trig
+     * functions and replacing them by the result of the call. It repeats this
+     * process until there are no more trig calls left.
+     */
+    process_trig_functions(expression) {
+        function backtrack(rest) {
+
+            let stack = 0;
+
+            for (let i = 0; i < rest.length; i++) {
+                switch (rest[i]) {
+                    case '(':
+                        stack++;
+                        break;
+                    case ')':
+                        if (stack == 0) {
+                            return [rest.slice(0, i), i - rest.length + 1];
+                        }
+                        stack--;
+                    default:
+                        continue;
+                }
+            }
+
+            throw new Error("Unmatched function.");
+        }
+
+        let retry = false;
+        let result, endindex, oldstring;
+
+        do {
+            retry = false;
+            for (let i = 0; i < expression.length; i++) {
+
+                let substring = expression.slice(i);
+                let slicelength;
+                let func;
+
+                if (substring.startsWith("sin(")) {
+                    func = this.sine.bind(this);
+                    slicelength = 4;
+                } else if (substring.startsWith("cos(")) {
+                    func = this.cosine.bind(this);
+                    slicelength = 4;
+                } else if (substring.startsWith("tan(")) {
+                    func = this.tangent.bind(this);
+                    slicelength = 4;
+                } else if (substring.startsWith("sin⁻¹(")) {
+                    func = this.cosecant.bind(this);
+                    slicelength = 6;
+                } else if (substring.startsWith("cos⁻¹(")) {
+                    func = this.secant.bind(this);
+                    slicelength = 6;
+                } else if (substring.startsWith("tan⁻¹(")) {
+                    func = this.tangent.bind(this);
+                    slicelength = 6;
+                } else {
+                    continue;
+                }
+
+                [result, endindex] = backtrack(expression.slice(i + slicelength));
+                if (endindex == 0) {
+                    endindex = expression.length;
+                }
+                result = this.evaluate(result);
+                result = func(result);
+                result = result.toString();
+                oldstring = expression.slice(i, endindex);
+                expression = expression.replace(oldstring, result);
+                retry = true;
+            }
+        } while (retry);
+
+        return expression;
+    }
+
+    /* This method reduces the given expression using the four simple binary
+     * operators; plus, minus, multiply and subtract. It does so by first
+     * tokenizing the string, then applying the operations. This method throws
+     * an error if the operators are malformed for example '10+'.
+     */
+    process_binary_operators(expression) {
+        let patterns = [
+            "\\d+(\\.\\d+)?", // Numbers (possibly floats)
+            "[+\\-*/]" // Operators
+        ]
+
+        let allowedTokens = new RegExp(patterns.join("|"), "g");
+
+        let tokens = expression.match(allowedTokens);
+
+        /* This nested function is only used below, and is to make sure
+         * binary operators are surrounded by numbers.
+         */
+        function check_binary_expression(tokens, i) {
+            if (i <= 0 || i >= (tokens.length - 1)) {
+                throw new Error("Malformed expression");
+            }
+            let left = tokens[i-1];
+            let right = tokens[i+1];
+
+            if (!(/^[0-9]+$/.test(left)) || !(/^[0-9]+$/.test(right))) {
+                throw new Error("Malformed expression");
+            }
+
+            return [left, right]
+        }
+
+        /* Multiplication and division first (please forgive me for editing
+         * the array while looping over it, I promise I've thought it through)
+         */
+        for (let i = 0; i < tokens.length; i++) {
+            if (tokens[i] == "*") {
+                let left, right;
+                [left, right] = check_binary_expression(tokens, i);
+                let answer = this.multiplication(left, right);
+                tokens[i-1] = answer.toString();
+                tokens.splice(i, 2);
+                i -= 1;
+            } else if (tokens[i] == "/") {
+                let left, right;
+                [left, right] = check_binary_expression(tokens, i);
+                let answer = this.division(left, right);
+                tokens[i-1] = answer.toString();
+                tokens.splice(i, 2);
+                i -= 1;
+            }
+        }
+
+        /* Addition and subtraction
+         */
+        for (let i = 0; i < tokens.length; i++) {
+            if (tokens[i] == "+") {
+                let left, right;
+                [left, right] = check_binary_expression(tokens, i);
+                let answer = this.addition(left, right);
+                tokens[i-1] = answer.toString();
+                tokens.splice(i, 2);
+                i -= 1;
+            } else if (tokens[i] == "-") {
+                let left, right;
+                [left, right] = check_binary_expression(tokens, i);
+                let answer = this.subtraction(left, right);
+                tokens[i-1] = answer.toString();
+                tokens.splice(i, 2);
+                i -= 1;
+            }
+        }
+
+        if (tokens.length != 1) {
+            throw new Error("Unexpected operator in the expression");
+        }
+
+        let answer = tokens[0];
+
+        return answer;
+    }
+
+    /* This method evaluates the given expression. First the trigonometric
+     * functions are evaluated, then the binary operators. This method may
+     * be called recursively from the trigonometric functions with a substring
+     * that is always smaller than the original expression.
      */
     evaluate(expression) {
 
         try {
-            function backtrack(rest) {
 
-                let stack = 0;
+            expression = this.process_trig_functions(expression);
 
-                for (let i = 0; i < rest.length; i++) {
-                    switch (rest[i]) {
-                        case '(':
-                            stack++;
-                            break;
-                        case ')':
-                            if (stack == 0) {
-                                return [rest.slice(0, i), i - rest.length + 1];
-                            }
-                            stack--;
-                        default:
-                            continue;
-                    }
-                }
-
-                throw new Error("Unmatched function.");
-            }
-
-            let retry = false;
-            let result, endindex, oldstring;
-
-            do {
-                retry = false;
-                for (let i = 0; i < expression.length; i++) {
-
-                    let substring = expression.slice(i);
-                    let slicelength;
-                    let func;
-
-                    if (substring.startsWith("sin(")) {
-                        func = this.sine.bind(this);
-                        slicelength = 4;
-                    } else if (substring.startsWith("cos(")) {
-                        func = this.cosine.bind(this);
-                        slicelength = 4;
-                    } else if (substring.startsWith("tan(")) {
-                        func = this.tangent.bind(this);
-                        slicelength = 4;
-                    } else if (substring.startsWith("sin⁻¹(")) {
-                        func = this.cosecant.bind(this);
-                        slicelength = 6;
-                    } else if (substring.startsWith("cos⁻¹(")) {
-                        func = this.secant.bind(this);
-                        slicelength = 6;
-                    } else if (substring.startsWith("tan⁻¹(")) {
-                        func = this.tangent.bind(this);
-                        slicelength = 6;
-                    } else {
-                        continue;
-                    }
-
-                    console.log(substring, func);
-
-                    [result, endindex] = backtrack(expression.slice(i + slicelength));
-                    if (endindex == 0) {
-                        endindex = expression.length;
-                    }
-                    result = this.evaluate(result);
-                    result = func(result);
-                    result = result.toString();
-                    oldstring = expression.slice(i, endindex);
-                    expression = expression.replace(oldstring, result);
-                    retry = true;
-                }
-            } while (retry);
-
-            let patterns = [
-                "\\d+(\\.\\d+)?", // Numbers (possibly floats)
-                "[+\\-*/]" // Operators
-            ]
-
-            let allowedTokens = new RegExp(patterns.join("|"), "g");
-
-            let tokens = expression.match(allowedTokens);
-
-            /* This nested function is only used below, and is to make sure
-             * binary operators are surrounded by numbers.
-             */
-            function check_binary_expression(tokens, i) {
-                if (i <= 0 || i >= (tokens.length - 1)) {
-                    throw new Error("Malformed expression");
-                }
-                let left = tokens[i-1];
-                let right = tokens[i+1];
-
-                if (!(/^[0-9]+$/.test(left)) || !(/^[0-9]+$/.test(right))) {
-                    throw new Error("Malformed expression");
-                }
-
-                return [left, right]
-            }
-
-            /* Multiplication and division first (please forgive me for editing
-             * the array while looping over it, I promise I've thought it through)
-             */
-            for (let i = 0; i < tokens.length; i++) {
-                if (tokens[i] == "*") {
-                    let left, right;
-                    [left, right] = check_binary_expression(tokens, i);
-                    let answer = this.multiplication(left, right);
-                    tokens[i-1] = answer.toString();
-                    tokens.splice(i, 2);
-                    i -= 1;
-                } else if (tokens[i] == "/") {
-                    let left, right;
-                    [left, right] = check_binary_expression(tokens, i);
-                    let answer = this.division(left, right);
-                    tokens[i-1] = answer.toString();
-                    tokens.splice(i, 2);
-                    i -= 1;
-                }
-            }
-
-            /* Addition and subtraction
-             */
-            for (let i = 0; i < tokens.length; i++) {
-                if (tokens[i] == "+") {
-                    let left, right;
-                    [left, right] = check_binary_expression(tokens, i);
-                    let answer = this.addition(left, right);
-                    tokens[i-1] = answer.toString();
-                    tokens.splice(i, 2);
-                    i -= 1;
-                } else if (tokens[i] == "-") {
-                    let left, right;
-                    [left, right] = check_binary_expression(tokens, i);
-                    let answer = this.subtraction(left, right);
-                    tokens[i-1] = answer.toString();
-                    tokens.splice(i, 2);
-                    i -= 1;
-                }
-            }
-
-            if (tokens.length != 1) {
-                throw new Error("Unexpected operator in the expression");
-            }
-
-            let answer = tokens[0];
+            let answer = this.process_binary_operators(expression);
 
             this._memory = answer;
+
             return answer;
         } catch (error) {
             console.log(error);
