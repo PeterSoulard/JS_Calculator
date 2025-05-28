@@ -1,3 +1,6 @@
+
+![CalcJS](https://github.com/user-attachments/assets/b3ef1898-7540-4c48-a9bb-b2792ed15694)
+
 # JS Calculator
 
 This is a construction using HTML, CSS and JavaScript which forms a calculator. It was created by Peter Soulard in May 2025 as an application assignment for Copernica.
